@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const usersRoutes = require('./routes/users');
 const roomsRoutes = require('./routes/rooms');
 const messagesRoutes = require('./routes/messages');
@@ -9,8 +10,9 @@ const PORT = 3000;
 
 // Middleware
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
-// Routes
+// API Routes
 app.use('/users', usersRoutes);
 app.use('/rooms', roomsRoutes);
 app.use('/messages', messagesRoutes);
