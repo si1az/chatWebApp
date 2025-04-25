@@ -58,7 +58,7 @@ router.put('/:id', (req, res) => {
     });
 });
 
-// delete a room
+// delete a room (by id)
 router.delete('/:id', (req, res) => {
     const query = `DELETE FROM Rooms WHERE room_id = ?`;
     db.run(query, [req.params.id], function (err) {
@@ -72,7 +72,7 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-// Promote a user to admin in a room
+// promote user to admin in a specific room
 router.put('/:room_id/promote/:user_id', (req, res) => {
     const query = `UPDATE User_Rooms SET role = 'admin' WHERE room_id = ? AND user_id = ?`;
     db.run(query, [req.params.room_id, req.params.user_id], function (err) {
@@ -86,7 +86,7 @@ router.put('/:room_id/promote/:user_id', (req, res) => {
     });
 });
 
-// View all users in a room with their roles
+// view all users in specific room + their roles
 router.get('/:room_id/users', (req, res) => {
     const query = `
         SELECT u.username, ur.role

@@ -1,4 +1,8 @@
-// user registration (done by admin/dev)
+// =========================
+// User Management
+// =========================
+
+// user registration done by admin/dev
 document.getElementById('userForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -36,7 +40,51 @@ document.getElementById('fetchUsers').addEventListener('click', async () => {
     });
 });
 
-// room registration
+// ban user (delete user)
+document.getElementById('banUser').addEventListener('click', async () => {
+    const user_id = document.getElementById('userIdBan').value;
+
+    const response = await fetch(`/users/${user_id}`, {
+        method: 'DELETE'
+    });
+
+    if (response.ok) {
+        alert('User banned successfully!');
+    } else {
+        alert('Failed to ban user.');
+    }
+});
+
+// update user info
+document.getElementById('updateUser').addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const user_id = document.getElementById('userIdUpdate').value;
+    const email = document.getElementById('newEmail').value;
+    const password_hash = document.getElementById('newPassword').value;
+
+    const body = {};
+    if (email) body.email = email;
+    if (password_hash) body.password_hash = password_hash;
+
+    const response = await fetch(`/users/${user_id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+    });
+
+    if (response.ok) {
+        alert('User updated successfully!');
+    } else {
+        alert('Failed to update user.');
+    }
+});
+
+// =========================
+// Room Management
+// =========================
+
+// register new room
 document.getElementById('roomForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -58,7 +106,7 @@ document.getElementById('roomForm').addEventListener('submit', async (e) => {
     }
 });
 
-// fetch + display rooms
+// fetch + display ALL rooms
 document.getElementById('fetchRooms').addEventListener('click', async () => {
     const response = await fetch('/rooms');
     const rooms = await response.json();
@@ -74,8 +122,60 @@ document.getElementById('fetchRooms').addEventListener('click', async () => {
     });
 });
 
-// form submission for sending message
-// sensitive to breaking with updates (check consistently)
+// delete a room
+document.getElementById('deleteRoom').addEventListener('click', async () => {
+    const room_id = document.getElementById('roomIdDelete').value;
+
+    const response = await fetch(`/rooms/${room_id}`, {
+        method: 'DELETE'
+    });
+
+    if (response.ok) {
+        alert('Room deleted successfully!');
+    } else {
+        alert('Failed to delete room.');
+    }
+});
+
+// promote user to admin (specific to a room)
+document.getElementById('promoteUser').addEventListener('click', async () => {
+    const room_id = document.getElementById('roomIdPromote').value;
+    const user_id = document.getElementById('userIdPromote').value;
+
+    const response = await fetch(`/rooms/${room_id}/promote/${user_id}`, {
+        method: 'PUT'
+    });
+
+    if (response.ok) {
+        alert('User promoted to admin!');
+    } else {
+        alert('Failed to promote user.');
+    }
+});
+
+// fetch + display users (in a specific room)
+document.getElementById('fetchRoomUsers').addEventListener('click', async () => {
+    const room_id = document.getElementById('roomIdUsers').value;
+
+    const response = await fetch(`/rooms/${room_id}/users`);
+    const users = await response.json();
+
+    const roomUsersDiv = document.getElementById('roomUsers');
+    roomUsersDiv.innerHTML = ''; // Clear previous users
+
+    users.forEach((user) => {
+        const div = document.createElement('div');
+        div.className = 'user';
+        div.innerHTML = `<strong>${user.username}</strong> (${user.role})`;
+        roomUsersDiv.appendChild(div);
+    });
+});
+
+// =========================
+// Message Management
+// =========================
+
+// new message
 document.getElementById('messageForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -97,7 +197,7 @@ document.getElementById('messageForm').addEventListener('submit', async (e) => {
     }
 });
 
-// fetch + display messages
+// fetch + display all messages
 document.getElementById('fetchMessages').addEventListener('click', async () => {
     const response = await fetch('/messages');
     const messages = await response.json();
@@ -113,7 +213,7 @@ document.getElementById('fetchMessages').addEventListener('click', async () => {
     });
 });
 
-// fetch messages per room
+// fetch + display messages per room id
 document.getElementById('fetchRoomMessages').addEventListener('click', async () => {
     const room_id = document.getElementById('roomIdView').value;
 
@@ -131,72 +231,7 @@ document.getElementById('fetchRoomMessages').addEventListener('click', async () 
     });
 });
 
-// promote user to admin role (in a specific room)
-document.getElementById('promoteUser').addEventListener('click', async () => {
-    const room_id = document.getElementById('roomIdPromote').value;
-    const user_id = document.getElementById('userIdPromote').value;
-
-    const response = await fetch(`/rooms/${room_id}/promote/${user_id}`, {
-        method: 'PUT'
-    });
-
-    if (response.ok) {
-        alert('User promoted to admin!');
-    } else {
-        alert('Failed to promote user.');
-    }
-});
-
-// fetch + display users in a specific room
-document.getElementById('fetchRoomUsers').addEventListener('click', async () => {
-    const room_id = document.getElementById('roomIdUsers').value;
-
-    const response = await fetch(`/rooms/${room_id}/users`);
-    const users = await response.json();
-
-    const roomUsersDiv = document.getElementById('roomUsers');
-    roomUsersDiv.innerHTML = ''; // Clear previous users
-
-    users.forEach((user) => {
-        const div = document.createElement('div');
-        div.className = 'user';
-        div.innerHTML = `<strong>${user.username}</strong> (${user.role})`;
-        roomUsersDiv.appendChild(div);
-    });
-});
-
-// count user messages (global)
-document.getElementById('fetchMessageCounts').addEventListener('click', async () => {
-    const response = await fetch('/users/message-count');
-    const counts = await response.json();
-
-    const messageCountsDiv = document.getElementById('messageCounts');
-    messageCountsDiv.innerHTML = ''; // Clear previous counts
-
-    counts.forEach((count) => {
-        const div = document.createElement('div');
-        div.className = 'count';
-        div.innerHTML = `<strong>${count.username}:</strong> ${count.message_count} messages`;
-        messageCountsDiv.appendChild(div);
-    });
-});
-
-// delete specific Room
-document.getElementById('deleteRoom').addEventListener('click', async () => {
-    const room_id = document.getElementById('roomIdDelete').value;
-
-    const response = await fetch(`/rooms/${room_id}`, {
-        method: 'DELETE'
-    });
-
-    if (response.ok) {
-        alert('Room deleted successfully!');
-    } else {
-        alert('Failed to delete room.');
-    }
-});
-
-// delete specific Message
+// delete a message
 document.getElementById('deleteMessage').addEventListener('click', async () => {
     const message_id = document.getElementById('messageIdDelete').value;
 
@@ -211,40 +246,24 @@ document.getElementById('deleteMessage').addEventListener('click', async () => {
     }
 });
 
-// Delete specific User (ban)
-document.getElementById('banUser').addEventListener('click', async () => {
-    const user_id = document.getElementById('userIdBan').value;
+// =========================
+// Statistics
+// =========================
 
-    const response = await fetch(`/users/${user_id}`, {
-        method: 'DELETE'
+/* 
+// Count messages per user
+document.getElementById('fetchMessageCounts').addEventListener('click', async () => {
+    const response = await fetch('/users/message-count');
+    const counts = await response.json();
+
+    const messageCountsDiv = document.getElementById('messageCounts');
+    messageCountsDiv.innerHTML = ''; // Clear previous counts
+
+    counts.forEach((count) => {
+        const div = document.createElement('div');
+        div.className = 'count';
+        div.innerHTML = `<strong>${count.username}:</strong> ${count.message_count} messages`;
+        messageCountsDiv.appendChild(div);
     });
-
-    if (response.ok) {
-        alert('User banned successfully!');
-    } else {
-        alert('Failed to ban user.');
-    }
 });
-
-// update user information
-document.getElementById('updateUser').addEventListener('click', async () => {
-    const user_id = document.getElementById('userIdUpdate').value;
-    const email = document.getElementById('newEmail').value;
-    const password_hash = document.getElementById('newPassword').value;
-
-    const body = {};
-    if (email) body.email = email;
-    if (password_hash) body.password_hash = password_hash;
-
-    const response = await fetch(`/users/${user_id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    });
-
-    if (response.ok) {
-        alert('User updated successfully!');
-    } else {
-        alert('Failed to update user.');
-    }
-});
+*/

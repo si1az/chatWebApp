@@ -5,146 +5,166 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        section { margin-bottom: 40px; }
-        .message, .user, .room { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        section {
+            margin-bottom: 40px;
+        }
+        section h2 {
+            color: #555;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, textarea, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .group {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>Admin Panel</h1>
+    <div class="container">
+        <h1>Admin Panel</h1>
 
-    <!-- Section to manage users -->
-    <section>
-        <h2>Manage Users</h2>
-        <form id="userForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <br><br>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <br><br>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <br><br>
-            <button type="submit">Register User</button>
-        </form>
-        <button id="fetchUsers">Fetch Users</button>
-        <div id="users"></div>
-    </section>
+        <!-- User Management -->
+        <section>
+            <h2>User Management</h2>
+            <div class="group">
+                <form id="userForm">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Register User</button>
+                </form>
+            </div>
+            <div class="group">
+                <button id="fetchUsers">Fetch Users</button>
+                <div id="users"></div>
+            </div>
+            <div class="group">
+                <label for="userIdBan">User ID to Ban:</label>
+                <input type="number" id="userIdBan" name="userIdBan" required>
+                <button id="banUser">Ban User</button>
+            </div>
+            <div class="group">
+                <label for="userIdUpdate">User ID to Update:</label>
+                <input type="number" id="userIdUpdate" name="userIdUpdate" required>
+                <label for="newEmail">New Email:</label>
+                <input type="email" id="newEmail" name="newEmail">
+                <label for="newPassword">New Password:</label>
+                <input type="password" id="newPassword" name="newPassword">
+                <button id="updateUser">Update User</button>
+            </div>
+        </section>
 
-    <!-- Section to manage rooms -->
-    <section>
-        <h2>Manage Rooms</h2>
-        <form id="roomForm">
-            <label for="roomName">Room Name:</label>
-            <input type="text" id="roomName" name="roomName" required>
-            <br><br>
-            <label for="creatorId">Creator ID:</label>
-            <input type="number" id="creatorId" name="creatorId" required>
-            <br><br>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description"></textarea>
-            <br><br>
-            <button type="submit">Register Room</button>
-        </form>
-        <button id="fetchRooms">Fetch Rooms</button>
-        <div id="rooms"></div>
-    </section>
+        <!-- Room Management -->
+        <section>
+            <h2>Room Management</h2>
+            <div class="group">
+                <form id="roomForm">
+                    <label for="roomName">Room Name:</label>
+                    <input type="text" id="roomName" name="roomName" required>
+                    <label for="creatorId">Creator ID:</label>
+                    <input type="number" id="creatorId" name="creatorId" required>
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description"></textarea>
+                    <button type="submit">Register Room</button>
+                </form>
+            </div>
+            <div class="group">
+                <button id="fetchRooms">Fetch Rooms</button>
+                <div id="rooms"></div>
+            </div>
+            <div class="group">
+                <label for="roomIdDelete">Room ID to Delete:</label>
+                <input type="number" id="roomIdDelete" name="roomIdDelete" required>
+                <button id="deleteRoom">Delete Room</button>
+            </div>
+            <div class="group">
+                <label for="roomIdPromote">Room ID:</label>
+                <input type="number" id="roomIdPromote" name="roomIdPromote" required>
+                <label for="userIdPromote">User ID to Promote:</label>
+                <input type="number" id="userIdPromote" name="userIdPromote" required>
+                <button id="promoteUser">Promote to Admin</button>
+            </div>
+            <div class="group">
+                <label for="roomIdUsers">Room ID to View Users:</label>
+                <input type="number" id="roomIdUsers" name="roomIdUsers" required>
+                <button id="fetchRoomUsers">Fetch Users</button>
+                <div id="roomUsers"></div>
+            </div>
+        </section>
 
-    <!-- Section to manage messages -->
-    <section>
-        <h2>Manage Messages</h2>
-        <form id="messageForm">
-            <label for="roomId">Room ID:</label>
-            <input type="number" id="room" name="roomId" required>
-            <br><br>
-            <label for="userId">User ID:</label>
-            <input type="number" id="user" name="userId" required>
-            <br><br>
-            <label for="content">Message:</label>
-            <textarea id="content" name="content" required></textarea>
-            <br><br>
-            <button type="submit">Send Message</button>
-        </form>
-        <button id="fetchMessages">Fetch Messages</button>
-        <div id="messages"></div>
-    </section>
-
-    <!-- View messages by room -->
-    <section>
-        <h2>View Messages by Room</h2>
-        <label for="roomIdView">Room ID:</label>
-        <input type="number" id="roomIdView" name="roomIdView" required>
-        <button id="fetchRoomMessages">Fetch Messages</button>
-        <div id="roomMessages"></div>
-    </section>
-
-    <!-- Promote user to admin -->
-    <section>
-        <h2>Promote User to Admin</h2>
-        <label for="roomIdPromote">Room ID:</label>
-        <input type="number" id="roomIdPromote" name="roomIdPromote" required>
-        <br><br>
-        <label for="userIdPromote">User ID:</label>
-        <input type="number" id="userIdPromote" name="userIdPromote" required>
-        <br><br>
-        <button id="promoteUser">Promote to Admin</button>
-    </section>
-
-    <!-- View users in a room -->
-    <section>
-        <h2>View Users in a Room</h2>
-        <label for="roomIdUsers">Room ID:</label>
-        <input type="number" id="roomIdUsers" name="roomIdUsers" required>
-        <button id="fetchRoomUsers">Fetch Users</button>
-        <div id="roomUsers"></div>
-    </section>
-
-    <!-- Count messages per user -->
-    <section>
-        <h2>Count Messages Per User</h2>
-        <button id="fetchMessageCounts">Fetch Message Counts</button>
-        <div id="messageCounts"></div>
-    </section>
-
-    <!-- Delete a Room -->
-    <section>
-        <h2>Delete a Room</h2>
-        <label for="roomIdDelete">Room ID:</label>
-        <input type="number" id="roomIdDelete" name="roomIdDelete" required>
-        <button id="deleteRoom">Delete Room</button>
-    </section>
-
-    <!-- Delete a Message -->
-    <section>
-        <h2>Delete a Message</h2>
-        <label for="messageIdDelete">Message ID:</label>
-        <input type="number" id="messageIdDelete" name="messageIdDelete" required>
-        <button id="deleteMessage">Delete Message</button>
-    </section>
-
-    <!-- Ban a User (Delete User) -->
-    <section>
-        <h2>Ban a User</h2>
-        <label for="userIdBan">User ID:</label>
-        <input type="number" id="userIdBan" name="userIdBan" required>
-        <button id="banUser">Ban User</button>
-    </section>
-
-    <!-- Update User Information -->
-    <section>
-        <h2>Update User Information</h2>
-        <label for="userIdUpdate">User ID:</label>
-        <input type="number" id="userIdUpdate" name="userIdUpdate" required>
-        <br><br>
-        <label for="newEmail">New Email:</label>
-        <input type="email" id="newEmail" name="newEmail">
-        <br><br>
-        <label for="newPassword">New Password:</label>
-        <input type="password" id="newPassword" name="newPassword">
-        <br><br>
-        <button id="updateUser">Update User</button>
-    </section>
+        <!-- Message Management -->
+        <section>
+            <h2>Message Management</h2>
+            <div class="group">
+                <form id="messageForm">
+                    <label for="room">Room ID:</label>
+                    <input type="number" id="room" name="room" required>
+                    <label for="user">User ID:</label>
+                    <input type="number" id="user" name="user" required>
+                    <label for="content">Message:</label>
+                    <textarea id="content" name="content" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+            <div class="group">
+                <button id="fetchMessages">Fetch All Messages</button>
+                <div id="messages"></div>
+            </div>
+            <div class="group">
+                <label for="roomIdView">Room ID to View Messages:</label>
+                <input type="number" id="roomIdView" name="roomIdView" required>
+                <button id="fetchRoomMessages">Fetch Messages</button>
+                <div id="roomMessages"></div>
+            </div>
+            <div class="group">
+                <label for="messageIdDelete">Message ID to Delete:</label>
+                <input type="number" id="messageIdDelete" name="messageIdDelete" required>
+                <button id="deleteMessage">Delete Message</button>
+            </div>
+        </section>
+    </div>
 
     <script src="script.js"></script>
 </body>

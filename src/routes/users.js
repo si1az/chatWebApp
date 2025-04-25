@@ -72,7 +72,8 @@ router.delete('/:id', (req, res) => {
     });
 });
 
-// Count messages per user
+/* 
+// count messages per user
 router.get('/message-count', (req, res) => {
     const query = `
         SELECT u.username, COUNT(m.message_id) AS message_count
@@ -88,5 +89,6 @@ router.get('/message-count', (req, res) => {
         }
     });
 });
+*/
 
 module.exports = router;
